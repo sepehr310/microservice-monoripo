@@ -13,6 +13,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       }
     },
   ])],
-  providers: [ProxyServiceService]
+  providers: [ProxyServiceService],
+  exports:[ProxyServiceService]
 })
 export class ProxyServiceModule { }

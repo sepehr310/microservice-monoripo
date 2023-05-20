@@ -1,30 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { SignUpWithUserNameAndPasswordDto } from './dto/sign-up-with-username-and-password.dto';
 import { ProxyServiceService } from '../proxy-service/proxy-service.service';
+import { User } from 'apps/user/src/user/entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private clientProxy:ProxyServiceService
+    private clientProxy:ProxyServiceService,
+    private readonly jwtService:JwtService
     ){}
  async createUser(createAuthDto: SignUpWithUserNameAndPasswordDto) {
-    return await this.clientProxy.createUserProxy(createAuthDto);
+    const user=  await this.clientProxy.createUserProxy(createAuthDto)
+    return user;
   }
 
-  findAll() {
-    return `This action returns all auth`;
+ async getUserByName(name:string){
+    const user=  await this.clientProxy.GetUserByNameProxy(name)
+    return user;
   }
+  async getJwtTokenForUser(user: User) {
+    const payload = { id: user.id ,userName:user.userName};
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return {
+      accessToken: this.jwtService.sign(payload)
+    };
   }
 }

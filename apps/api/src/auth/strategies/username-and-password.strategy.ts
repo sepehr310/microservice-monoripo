@@ -3,23 +3,23 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import * as Bcrypt from 'bcrypt';
 import { User } from 'apps/user/src/user/entities/user.entity';
-import { UserService } from 'apps/user/src/user/user.service';
+import { AuthService } from '../auth.service';
 
 @Injectable()
-export class EmailAndPasswordStrategy extends PassportStrategy(Strategy, 'userName-and-password') {
-  public static KEY = 'userName-and-password';
+export class UserNameAndPasswordStrategy extends PassportStrategy(Strategy, 'username-and-password') {
+  public static KEY = 'username-and-password';
 
-  constructor(private usersService: UserService) {
+  constructor(private authService: AuthService) {
     super({
       usernameField: 'userName'
     });
   }
 
   async validate(userName: string, password: string): Promise<any> {
-    let user: User;
+    let user: any;
 
     try {
-      user = await this.usersService.findUserByUserName(userName);
+      user = await this.authService.getUserByName(userName);
     } catch (_e) {
       user = null;
     }

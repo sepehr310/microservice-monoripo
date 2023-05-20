@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,7 +12,12 @@ export class UserService {
     private userRepository: Repository<User>
   ) { }
   async create(createUserDto: SignUpWithUserNameAndPasswordDto) {
-    return this.userRepository.create(createUserDto).save()
+    try {
+      return await this.userRepository.create(createUserDto).save()
+
+    } catch (error) {
+        throw new InternalServerErrorException(error.message)
+    }
   }
 
   async createNewUser(userName: string, password: string) {
@@ -36,7 +41,7 @@ export class UserService {
 
   async findUserByUserName(userName: string) {
     return await this.userRepository.createQueryBuilder('user')
-      .andWhere(`user.userName = ${userName}`)
+      .andWhere(`user.userName = '${userName}'`)
       .getOne()
   }
 

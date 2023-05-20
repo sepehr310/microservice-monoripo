@@ -7,8 +7,31 @@ export class ProxyServiceService {
     constructor(
         @Inject('AUTH_SERVICE') private readonly client: ClientProxy) { }
 
-    async createUserProxy(user: SignUpWithUserNameAndPasswordDto) {
-        return await this.client.send('createUser', user)
+     createUserProxy(user: SignUpWithUserNameAndPasswordDto) {
+
+        return new Promise((resolve,reject)=>{
+            this.client.send('createUser', user).subscribe(result=>{
+                resolve(result)
+            },(err)=>{
+                reject(err)
+            })
+
+        })
+        
+
+    }
+
+    GetUserByNameProxy(name: string) {
+
+        return new Promise((resolve,reject)=>{
+            this.client.send('findUserByUserName', name).subscribe(result=>{
+                resolve(result)
+            },(err)=>{
+                reject(err)
+            })
+
+        })
+        
 
     }
 }

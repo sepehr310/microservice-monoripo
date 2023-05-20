@@ -1,39 +1,27 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseFilters } from '@nestjs/common';
 import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { SignUpWithUserNameAndPasswordDto } from 'apps/api/src/auth/dto/sign-up-with-username-and-password.dto';
+import { RedisExceptionFilter } from 'apps/lib/exceptions/rcp-error.exeption';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseFilters(new RedisExceptionFilter())
   @MessagePattern('createUser')
   create(@Payload() data: any, @Ctx() context: RedisContext) {
-    console.log(data);
-    console.log(context)
     
     return this.userService.create(data);
   }
 
-  @MessagePattern('findAllUser')
-  findAll() {
-    return this.userService.findAll();
+
+
+  @MessagePattern('findUserByUserName')
+  findUserByUserName(@Payload() name: string) {
+    console.log(name);
+    
+    return this.userService.findUserByUserName(name);
   }
 
-  @MessagePattern('findOneUser')
-  findOne(@Payload() id: number) {
-    return this.userService.findOne(id);
-  }
-
-  @MessagePattern('updateUser')
-  update(@Payload() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto.id, updateUserDto);
-  }
-
-  @MessagePattern('removeUser')
-  remove(@Payload() id: number) {
-    return this.userService.remove(id);
-  }
 }
