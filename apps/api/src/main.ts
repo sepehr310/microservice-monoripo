@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ApiModule } from './api.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApiModule);
@@ -14,7 +15,6 @@ async function bootstrap() {
 const document = SwaggerModule.createDocument(app, config);
 
 app.useGlobalPipes(new ValidationPipe());
-
 SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }

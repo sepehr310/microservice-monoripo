@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { SignUpWithUserNameAndPasswordDto } from './dto/sign-up-with-username-and-password.dto';
+import { ProxyServiceService } from '../proxy-service/proxy-service.service';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private clientProxy:ProxyServiceService
+    ){}
+ async createUser(createAuthDto: SignUpWithUserNameAndPasswordDto) {
+    return await this.clientProxy.createUserProxy(createAuthDto);
   }
 
   findAll() {

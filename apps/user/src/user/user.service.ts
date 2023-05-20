@@ -1,11 +1,49 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { SignUpWithUserNameAndPasswordDto } from 'apps/api/src/auth/dto/sign-up-with-username-and-password.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>
+  ) { }
+  async create(createUserDto: SignUpWithUserNameAndPasswordDto) {
+    return this.userRepository.create(createUserDto).save()
+  }
+
+  async createNewUser(userName: string, password: string) {
+    const userExists = await this.userRepository.findOne({
+      where: {
+        userName
+      }
+    });
+
+    if (userExists) {
+      throw new BadRequestException('User with this username already exists');
+    }
+
+    const user = await this.userRepository.create({
+      userName,
+      password
+    });
+
+    return user;
+  }
+
+  async findUserByUserName(userName: string) {
+    return await this.userRepository.createQueryBuilder('user')
+      .andWhere(`user.userName = ${userName}`)
+      .getOne()
+  }
+
+  async findUserById(id: number) {
+    return await this.userRepository.createQueryBuilder('user')
+      .andWhere(`user.id = ${id}`)
+      .getOne()
   }
 
   findAll() {
