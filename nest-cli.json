@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/microservice-monoripo/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/microservice-monoripo/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/microservice-monoripo",
+  "projects": {
+    "microservice-monoripo": {
+      "type": "application",
+      "root": "apps/microservice-monoripo",
+      "entryFile": "main",
+      "sourceRoot": "apps/microservice-monoripo/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/microservice-monoripo/tsconfig.app.json"
+      }
+    },
+    "api": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api/tsconfig.app.json"
+      }
+    },
+    "user": {
+      "type": "application",
+      "root": "apps/user",
+      "entryFile": "main",
+      "sourceRoot": "apps/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user/tsconfig.app.json"
+      }
+    },
+    "sockte": {
+      "type": "application",
+      "root": "apps/sockte",
+      "entryFile": "main",
+      "sourceRoot": "apps/sockte/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/sockte/tsconfig.app.json"
+      }
+    }
+  }
+}
