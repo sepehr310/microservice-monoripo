@@ -9,4 +9,5 @@ export class SockteController {
   getHello(): string {
     return this.sockteService.getHello();
   }
+  
 }
