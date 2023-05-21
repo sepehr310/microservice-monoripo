@@ -2,19 +2,29 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
+  ConnectedSocket,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { NotificationService } from './notification.service';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
+import { Server, Socket } from 'socket.io';
 
 @Processor('message')
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
 export class NotificationGateway {
   constructor(private readonly notificationService: NotificationService) {}
-
+  @WebSocketServer()
+  server: Server;
   @Process()
-  async transcode(job: Job<unknown>) {
-    console.log(job);
+  @SubscribeMessage('getmessages')
+  async transcode(job: Job<unknown>,@ConnectedSocket() client: Socket) {
+    console.log(job.data);
+    this.server.emit('messages', job.data);
     
   }
 
